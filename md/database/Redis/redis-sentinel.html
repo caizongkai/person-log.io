@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Redis-sentinal部署 | Java 全栈知识体系</title>
+    <meta name="description" content="包含: Java 基础, Java 部分源码, JVM, Spring, Spring Boot, Spring Cloud, 数据库原理, MySQL, ElasticSearch, MongoDB, Docker, k8s, CI&amp;CD, Linux, DevOps, 分布式, 中间件, 开发工具, Git, IDE, 源码阅读，读书笔记, 开源项目...">
+    <link rel="icon" href="/person-log.io/images/photo.jpg">
+  <link rel="manifest" href="/person-log.io/images/photo.jpg">
+  <link rel="apple-touch-icon" href="/person-log.io/images/photo.jpg">
+  <meta http-quiv="pragma" cotent="no-cache">
+  <meta http-quiv="pragma" cotent="no-cache,must-revalidate">
+  <meta http-quiv="expires" cotent="0">
+    
+    <link rel="preload" href="/person-log.io/assets/css/0.styles.4ff3082f.css" as="style"><link rel="preload" href="/person-log.io/assets/js/app.900e0138.js" as="script"><link rel="preload" href="/person-log.io/assets/js/101.e70ee001.js" as="script"><link rel="prefetch" href="/person-log.io/assets/js/10.5d3102c6.js"><link rel="prefetch" href="/person-log.io/assets/js/100.8abb6c0d.js"><link rel="prefetch" href="/person-log.io/assets/js/102.8eb6e9a9.js"><link rel="prefetch" href="/person-log.io/assets/js/103.4868ab00.js"><link rel="prefetch" href="/person-log.io/assets/js/104.1f3ae061.js"><link rel="prefetch" href="/person-log.io/assets/js/105.b4d44644.js"><link rel="prefetch" href="/person-log.io/assets/js/106.ed41d71f.js"><link rel="prefetch" href="/person-log.io/assets/js/107.99d8e0f9.js"><link rel="prefetch" href="/person-log.io/assets/js/108.b8cdbf75.js"><link rel="prefetch" href="/person-log.io/assets/js/109.e598b3d2.js"><link rel="prefetch" href="/person-log.io/assets/js/11.dd8a8a0d.js"><link rel="prefetch" href="/person-log.io/assets/js/110.45af1b3c.js"><link rel="prefetch" href="/person-log.io/assets/js/111.62ae94fd.js"><link rel="prefetch" href="/person-log.io/assets/js/112.b9434dad.js"><link rel="prefetch" href="/person-log.io/assets/js/113.377bbf43.js"><link rel="prefetch" href="/person-log.io/assets/js/114.5a6b7bd8.js"><link rel="prefetch" href="/person-log.io/assets/js/115.103372d3.js"><link rel="prefetch" href="/person-log.io/assets/js/116.43e77bfc.js"><link rel="prefetch" href="/person-log.io/assets/js/117.fc88e5e3.js"><link rel="prefetch" href="/person-log.io/assets/js/118.a169c7d0.js"><link rel="prefetch" href="/person-log.io/assets/js/119.4434297d.js"><link rel="prefetch" href="/person-log.io/assets/js/12.f6fdf928.js"><link rel="prefetch" href="/person-log.io/assets/js/120.ae5585ff.js"><link rel="prefetch" href="/person-log.io/assets/js/121.b7238501.js"><link rel="prefetch" href="/person-log.io/assets/js/122.3aa0028c.js"><link rel="prefetch" href="/person-log.io/assets/js/123.889610c6.js"><link rel="prefetch" href="/person-log.io/assets/js/124.2d9a318a.js"><link rel="prefetch" href="/person-log.io/assets/js/125.72b2c2f7.js"><link rel="prefetch" href="/person-log.io/assets/js/126.bd4ce6c8.js"><link rel="prefetch" href="/person-log.io/assets/js/13.5710e644.js"><link rel="prefetch" href="/person-log.io/assets/js/14.dd6c1cd0.js"><link rel="prefetch" href="/person-log.io/assets/js/15.7149798f.js"><link rel="prefetch" href="/person-log.io/assets/js/16.7bd52a2f.js"><link rel="prefetch" href="/person-log.io/assets/js/17.4daa4746.js"><link rel="prefetch" href="/person-log.io/assets/js/18.d4bdd6a7.js"><link rel="prefetch" href="/person-log.io/assets/js/19.95ddf026.js"><link rel="prefetch" href="/person-log.io/assets/js/2.143de871.js"><link rel="prefetch" href="/person-log.io/assets/js/20.615f1176.js"><link rel="prefetch" href="/person-log.io/assets/js/21.9d613190.js"><link rel="prefetch" href="/person-log.io/assets/js/22.eb619a13.js"><link rel="prefetch" href="/person-log.io/assets/js/23.70512efd.js"><link rel="prefetch" href="/person-log.io/assets/js/24.a299e3cc.js"><link rel="prefetch" href="/person-log.io/assets/js/25.e0bc91d9.js"><link rel="prefetch" href="/person-log.io/assets/js/26.bdd22671.js"><link rel="prefetch" href="/person-log.io/assets/js/27.6b7b12a6.js"><link rel="prefetch" href="/person-log.io/assets/js/28.d3ee9e71.js"><link rel="prefetch" href="/person-log.io/assets/js/29.3846b469.js"><link rel="prefetch" href="/person-log.io/assets/js/3.cd8ff11a.js"><link rel="prefetch" href="/person-log.io/assets/js/30.06463218.js"><link rel="prefetch" href="/person-log.io/assets/js/31.c52bcd52.js"><link rel="prefetch" href="/person-log.io/assets/js/32.aeb3a009.js"><link rel="prefetch" href="/person-log.io/assets/js/33.e9ece8bf.js"><link rel="prefetch" href="/person-log.io/assets/js/34.aa658d65.js"><link rel="prefetch" href="/person-log.io/assets/js/35.b0e6429a.js"><link rel="prefetch" href="/person-log.io/assets/js/36.11c95fd3.js"><link rel="prefetch" href="/person-log.io/assets/js/37.f6b7ce7c.js"><link rel="prefetch" href="/person-log.io/assets/js/38.2c0daf10.js"><link rel="prefetch" href="/person-log.io/assets/js/39.a2359299.js"><link rel="prefetch" href="/person-log.io/assets/js/4.f87d085e.js"><link rel="prefetch" href="/person-log.io/assets/js/40.67e9271b.js"><link rel="prefetch" href="/person-log.io/assets/js/41.b530b7d7.js"><link rel="prefetch" href="/person-log.io/assets/js/42.ceec96ec.js"><link rel="prefetch" href="/person-log.io/assets/js/43.1882528a.js"><link rel="prefetch" href="/person-log.io/assets/js/44.9c4e1af8.js"><link rel="prefetch" href="/person-log.io/assets/js/45.4ddef8e4.js"><link rel="prefetch" href="/person-log.io/assets/js/46.67313dc2.js"><link rel="prefetch" href="/person-log.io/assets/js/47.5c6b2c29.js"><link rel="prefetch" href="/person-log.io/assets/js/48.b7e57021.js"><link rel="prefetch" href="/person-log.io/assets/js/49.bff0de67.js"><link rel="prefetch" href="/person-log.io/assets/js/5.13ef03c9.js"><link rel="prefetch" href="/person-log.io/assets/js/50.0570550e.js"><link rel="prefetch" href="/person-log.io/assets/js/51.7e536feb.js"><link rel="prefetch" href="/person-log.io/assets/js/52.a011b658.js"><link rel="prefetch" href="/person-log.io/assets/js/53.c8ba3843.js"><link rel="prefetch" href="/person-log.io/assets/js/54.7ec121d9.js"><link rel="prefetch" href="/person-log.io/assets/js/55.516a38ec.js"><link rel="prefetch" href="/person-log.io/assets/js/56.62b2636e.js"><link rel="prefetch" href="/person-log.io/assets/js/57.b3111d41.js"><link rel="prefetch" href="/person-log.io/assets/js/58.4e4428b3.js"><link rel="prefetch" href="/person-log.io/assets/js/59.4bd160cb.js"><link rel="prefetch" href="/person-log.io/assets/js/6.246d68f0.js"><link rel="prefetch" href="/person-log.io/assets/js/60.147eae57.js"><link rel="prefetch" href="/person-log.io/assets/js/61.ece9faa7.js"><link rel="prefetch" href="/person-log.io/assets/js/62.42d5a03e.js"><link rel="prefetch" href="/person-log.io/assets/js/63.618c9a42.js"><link rel="prefetch" href="/person-log.io/assets/js/64.4a5e7887.js"><link rel="prefetch" href="/person-log.io/assets/js/65.e7fb9653.js"><link rel="prefetch" href="/person-log.io/assets/js/66.29e33acf.js"><link rel="prefetch" href="/person-log.io/assets/js/67.ce40420e.js"><link rel="prefetch" href="/person-log.io/assets/js/68.9ae9da96.js"><link rel="prefetch" href="/person-log.io/assets/js/69.798d9970.js"><link rel="prefetch" href="/person-log.io/assets/js/7.77d79df0.js"><link rel="prefetch" href="/person-log.io/assets/js/70.5ebe26ce.js"><link rel="prefetch" href="/person-log.io/assets/js/71.79a27be8.js"><link rel="prefetch" href="/person-log.io/assets/js/72.a4c84ae1.js"><link rel="prefetch" href="/person-log.io/assets/js/73.be2bf486.js"><link rel="prefetch" href="/person-log.io/assets/js/74.2e32e870.js"><link rel="prefetch" href="/person-log.io/assets/js/75.fbabbd25.js"><link rel="prefetch" href="/person-log.io/assets/js/76.ea1ba140.js"><link rel="prefetch" href="/person-log.io/assets/js/77.4ce215b3.js"><link rel="prefetch" href="/person-log.io/assets/js/78.4757c020.js"><link rel="prefetch" href="/person-log.io/assets/js/79.398d6895.js"><link rel="prefetch" href="/person-log.io/assets/js/8.f33fb86b.js"><link rel="prefetch" href="/person-log.io/assets/js/80.2913d38e.js"><link rel="prefetch" href="/person-log.io/assets/js/81.00d718fe.js"><link rel="prefetch" href="/person-log.io/assets/js/82.49baf639.js"><link rel="prefetch" href="/person-log.io/assets/js/83.0b255dec.js"><link rel="prefetch" href="/person-log.io/assets/js/84.aa39b1b8.js"><link rel="prefetch" href="/person-log.io/assets/js/85.220a5565.js"><link rel="prefetch" href="/person-log.io/assets/js/86.5381f000.js"><link rel="prefetch" href="/person-log.io/assets/js/87.55b5c1f1.js"><link rel="prefetch" href="/person-log.io/assets/js/88.f9d2f70c.js"><link rel="prefetch" href="/person-log.io/assets/js/89.d9463204.js"><link rel="prefetch" href="/person-log.io/assets/js/9.6dba6746.js"><link rel="prefetch" href="/person-log.io/assets/js/90.6b0a709d.js"><link rel="prefetch" href="/person-log.io/assets/js/91.4ae96144.js"><link rel="prefetch" href="/person-log.io/assets/js/92.b9357539.js"><link rel="prefetch" href="/person-log.io/assets/js/93.59c128af.js"><link rel="prefetch" href="/person-log.io/assets/js/94.1008960c.js"><link rel="prefetch" href="/person-log.io/assets/js/95.128fb549.js"><link rel="prefetch" href="/person-log.io/assets/js/96.d74f8117.js"><link rel="prefetch" href="/person-log.io/assets/js/97.afeacc56.js"><link rel="prefetch" href="/person-log.io/assets/js/98.4de04002.js"><link rel="prefetch" href="/person-log.io/assets/js/99.599f733a.js">
+    <link rel="stylesheet" href="/person-log.io/assets/css/0.styles.4ff3082f.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/person-log.io/" class="home-link router-link-active"><!----> <span class="site-name">Java 全栈知识体系</span></a> <div class="links" style="max-width:nullpx;"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/person-log.io/md/" class="nav-link router-link-active">导读</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title">Java</span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/person-log.io/md/JAVA/" class="nav-link">JAVA基础</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title">数据库</span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/person-log.io/md/database/base/" class="nav-link">数据库基础</a></li><li class="dropdown-item"><!----> <a href="/person-log.io/md/database/Mysql/" class="nav-link">MySQL</a></li><li class="dropdown-item"><!----> <a href="/person-log.io/md/database/Redis/" class="nav-link router-link-active">Redis</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title">计算机网络</span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/person-log.io/md/计算机网络/图解网络.html" class="nav-link">图解网络</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title">项目部署</span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/person-log.io/md/DevOps/Docker/" class="nav-link">Docker</a></li><li class="dropdown-item"><!----> <a href="/person-log.io/md/DevOps/jenkins/" class="nav-link">jenkins</a></li><li class="dropdown-item"><!----> <a href="/person-log.io/md/DevOps/consul-cluster/" class="nav-link">consul</a></li><li class="dropdown-item"><!----> <a href="/person-log.io/md/DevOps/Nginx/" class="nav-link">Nginx</a></li><li class="dropdown-item"><!----> <a href="/person-log.io/md/DevOps/Linux/" class="nav-link">Linux</a></li><li class="dropdown-item"><!----> <a href="/person-log.io/md/DevOps/blog/" class="nav-link">个人博客</a></li></ul></div></div> <a href="https://github.com/caizongkai/vuepressDemo" target="_blank" rel="noopener noreferrer" class="repo-link">
+    修改文档
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></nav></div></header> <div class="sidebar-mask"></div> <div class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/person-log.io/md/" class="nav-link router-link-active">导读</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title">Java</span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/person-log.io/md/JAVA/" class="nav-link">JAVA基础</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title">数据库</span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/person-log.io/md/database/base/" class="nav-link">数据库基础</a></li><li class="dropdown-item"><!----> <a href="/person-log.io/md/database/Mysql/" class="nav-link">MySQL</a></li><li class="dropdown-item"><!----> <a href="/person-log.io/md/database/Redis/" class="nav-link router-link-active">Redis</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title">计算机网络</span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/person-log.io/md/计算机网络/图解网络.html" class="nav-link">图解网络</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title">项目部署</span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/person-log.io/md/DevOps/Docker/" class="nav-link">Docker</a></li><li class="dropdown-item"><!----> <a href="/person-log.io/md/DevOps/jenkins/" class="nav-link">jenkins</a></li><li class="dropdown-item"><!----> <a href="/person-log.io/md/DevOps/consul-cluster/" class="nav-link">consul</a></li><li class="dropdown-item"><!----> <a href="/person-log.io/md/DevOps/Nginx/" class="nav-link">Nginx</a></li><li class="dropdown-item"><!----> <a href="/person-log.io/md/DevOps/Linux/" class="nav-link">Linux</a></li><li class="dropdown-item"><!----> <a href="/person-log.io/md/DevOps/blog/" class="nav-link">个人博客</a></li></ul></div></div> <a href="https://github.com/caizongkai/vuepressDemo" target="_blank" rel="noopener noreferrer" class="repo-link">
+    修改文档
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></nav>  <ul class="sidebar-links"><li><div class="sidebar-group first"><p class="sidebar-heading"><span>数据库基础</span> <!----></p> <ul class="sidebar-group-items"><li><a href="/person-log.io/md/database/base/04-数据库核心知识点.html" class="sidebar-link">数据库核心知识点</a></li></ul></div></li><li><div class="sidebar-group"><p class="sidebar-heading"><span>MySQL</span> <!----></p> <ul class="sidebar-group-items"><li><a href="/person-log.io/md/database/Mysql/MySQL-01-数据类型.html" class="sidebar-link">数据类型</a></li><li><a href="/person-log.io/md/database/Mysql/MySQL-02-存储引擎.html" class="sidebar-link">存储引擎</a></li><li><a href="/person-log.io/md/database/Mysql/MySQL-03-索引.html" class="sidebar-link">索引</a></li><li><a href="/person-log.io/md/database/Mysql/MySQL-04-优化.html" class="sidebar-link">优化</a></li><li><a href="/person-log.io/md/database/Mysql/MySQL-07-一条SQL的执行过程详解.html" class="sidebar-link">一条SQL的执行过程详解</a></li></ul></div></li><li><div class="sidebar-group"><p class="sidebar-heading open"><span>Redis</span> <!----></p> <ul class="sidebar-group-items"><li><a href="/person-log.io/md/database/Redis/" aria-current="page" class="sidebar-link">Redis知识体系详解</a></li><li><a href="/person-log.io/md/database/Redis/数据结构与对象/Redis-01-SDS.html" class="sidebar-link">Redis数据结构-SDS</a></li><li><a href="/person-log.io/md/database/Redis/数据结构与对象/Redis-02-链表.html" class="sidebar-link">Redis数据结构-链表</a></li><li><a href="/person-log.io/md/database/Redis/数据结构与对象/Redis-03-字典.html" class="sidebar-link">Redis数据结构-字典</a></li><li><a href="/person-log.io/md/database/Redis/数据结构与对象/Redis-04-跳跃表.html" class="sidebar-link">Redis数据结构-跳跃表</a></li><li><a href="/person-log.io/md/database/Redis/数据结构与对象/Redis-05-整数集合.html" class="sidebar-link">Redis数据结构-整数集合</a></li><li><a href="/person-log.io/md/database/Redis/数据结构与对象/Redis-06-压缩列表.html" class="sidebar-link">Redis数据结构-压缩列表</a></li><li><a href="/person-log.io/md/database/Redis/数据结构与对象/Redis-07-对象.html" class="sidebar-link">Redis对象</a></li><li><a href="/person-log.io/md/database/Redis/one-Redis/Redis-01-数据库.html" class="sidebar-link">Redis数据库</a></li><li><a href="/person-log.io/md/database/Redis/one-Redis/Redis-02-RDB.html" class="sidebar-link">RDB</a></li><li><a href="/person-log.io/md/database/Redis/one-Redis/Redis-03-AOF.html" class="sidebar-link">AOF</a></li><li><a href="/person-log.io/md/database/Redis/one-Redis/Redis-04-事件.html" class="sidebar-link">事件</a></li><li><a href="/person-log.io/md/database/Redis/multi-redis/Redis-01-主从复制.html" class="sidebar-link">主从复制</a></li><li><a href="/person-log.io/md/database/Redis/multi-redis/Redis-02-哨兵机制.html" class="sidebar-link">哨兵机制</a></li><li><a href="/person-log.io/md/database/Redis/redis-install.html" class="sidebar-link">redis实战-redis安装</a></li><li><a href="/person-log.io/md/database/Redis/redis-sentinel.html" aria-current="page" class="active sidebar-link">redis实战-哨兵模式配置</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/person-log.io/md/database/Redis/redis-sentinel.html#从服务器配置" class="sidebar-link">从服务器配置</a></li><li class="sidebar-sub-header"><a href="/person-log.io/md/database/Redis/redis-sentinel.html#哨兵配置文件sentinel-conf" class="sidebar-link">哨兵配置文件sentinel.conf</a></li><li class="sidebar-sub-header"><a href="/person-log.io/md/database/Redis/redis-sentinel.html#启动" class="sidebar-link">启动</a></li><li class="sidebar-sub-header"><a href="/person-log.io/md/database/Redis/redis-sentinel.html#测试" class="sidebar-link">测试</a></li></ul></li></ul></div></li></ul> </div> <div class="page"> <div class="content"><h1 id="redis-sentinal部署"><a href="#redis-sentinal部署" class="header-anchor">#</a> Redis-sentinal部署</h1> <blockquote><p>本文主要是redis哨兵模式的部署实战</p></blockquote> <p>主服务器安装和配置文件参照redis安装。</p> <p>主服务器要增加</p> <div class="language-conf line-numbers-mode"><pre class="language-text"><code>masterauth FFRXV2cyadtv
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br></div></div><h2 id="从服务器配置"><a href="#从服务器配置" class="header-anchor">#</a> 从服务器配置</h2> <p>从服务器增加配置</p> <div class="language-conf line-numbers-mode"><pre class="language-text"><code># 指定主服务器，注意：有关slaveof的配置只是配置从服务器，主服务器不需要配置
+slaveof 192.168.245.130 6379
+# 主服务器密码，注意：有关slaveof的配置只是配置从服务器，主服务器不需要配置
+masterauth FFRXV2cyadtv
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br></div></div><p>从服务器完整配置文件：</p> <div class="language-conf line-numbers-mode"><pre class="language-text"><code># Redis配置文件样例
+
+# Note on units: when memory size is needed, it is possible to specifiy
+# it in the usual form of 1k 5GB 4M and so forth:
+#
+# 1k =&gt; 1000 bytes
+# 1kb =&gt; 1024 bytes
+# 1m =&gt; 1000000 bytes
+# 1mb =&gt; 1024*1024 bytes
+# 1g =&gt; 1000000000 bytes
+# 1gb =&gt; 1024*1024*1024 bytes
+#
+# units are case insensitive so 1GB 1Gb 1gB are all the same.
+
+# Redis默认不是以守护进程的方式运行，可以通过该配置项修改，使用yes启用守护进程
+# 启用守护进程后，Redis会把pid写到一个pidfile中，在/var/run/redis.pid
+daemonize yes
+requirepass FFRXV2cyadtv
+# 当Redis以守护进程方式运行时，Redis默认会把pid写入/var/run/redis.pid文件，可以通过pidfile指定
+pidfile /var/run/redis.pid
+
+# 指定Redis监听端口，默认端口为6379
+# 如果指定0端口，表示Redis不监听TCP连接
+port 6379
+
+# 绑定的主机地址
+# 你可以绑定单一接口，如果没有绑定，所有接口都会监听到来的连接
+# bind 127.0.0.1
+
+# Specify the path for the unix socket that will be used to listen for
+# incoming connections. There is no default, so Redis will not listen
+# on a unix socket when not specified.
+#
+# unixsocket /tmp/redis.sock
+# unixsocketperm 755
+
+# 当客户端闲置多长时间后关闭连接，如果指定为0，表示关闭该功能
+timeout 0
+
+# 指定日志记录级别，Redis总共支持四个级别：debug、verbose、notice、warning，默认为verbose
+# debug (很多信息, 对开发／测试比较有用)
+# verbose (many rarely useful info, but not a mess like the debug level)
+# notice (moderately verbose, what you want in production probably)
+# warning (only very important / critical messages are logged)
+loglevel verbose
+
+# 日志记录方式，默认为标准输出，如果配置为redis为守护进程方式运行，而这里又配置为标准输出，则日志将会发送给/dev/null
+logfile stdout
+
+# To enable logging to the system logger, just set 'syslog-enabled' to yes,
+# and optionally update the other syslog parameters to suit your needs.
+# syslog-enabled no
+
+# Specify the syslog identity.
+# syslog-ident redis
+
+# Specify the syslog facility.  Must be USER or between LOCAL0-LOCAL7.
+# syslog-facility local0
+
+# 设置数据库的数量，默认数据库为0，可以使用select &lt;dbid&gt;命令在连接上指定数据库id
+# dbid是从0到‘databases’-1的数目
+databases 16
+
+################################ SNAPSHOTTING  #################################
+# 指定在多长时间内，有多少次更新操作，就将数据同步到数据文件，可以多个条件配合
+# Save the DB on disk:
+#
+#   save &lt;seconds&gt; &lt;changes&gt;
+#
+#   Will save the DB if both the given number of seconds and the given
+#   number of write operations against the DB occurred.
+#
+#   满足以下条件将会同步数据:
+#   900秒（15分钟）内有1个更改
+#   300秒（5分钟）内有10个更改
+#   60秒内有10000个更改
+#   Note: 可以把所有“save”行注释掉，这样就取消同步操作了
+
+save 900 1
+save 300 10
+save 60 10000
+
+# 指定存储至本地数据库时是否压缩数据，默认为yes，Redis采用LZF压缩，如果为了节省CPU时间，可以关闭该选项，但会导致数据库文件变的巨大
+rdbcompression yes
+
+# 指定本地数据库文件名，默认值为dump.rdb
+dbfilename dump.rdb
+
+# 工作目录.
+# 指定本地数据库存放目录，文件名由上一个dbfilename配置项指定
+#
+# Also the Append Only File will be created inside this directory.
+#
+# 注意，这里只能指定一个目录，不能指定文件名
+dir ./
+
+################################# REPLICATION #################################
+
+
+# 主从复制。使用slaveof从 Redis服务器复制一个Redis实例。注意，该配置仅限于当前slave有效
+# so for example it is possible to configure the slave to save the DB with a
+# different interval, or to listen to another port, and so on.
+# 设置当本机为slav服务时，设置master服务的ip地址及端口，在Redis启动时，它会自动从master进行数据同步
+slaveof 192.168.245.130 6379
+
+# 当master服务设置了密码保护时，slav服务连接master的密码
+# 下文的“requirepass”配置项可以指定密码
+masterauth FFRXV2cyadtv
+
+# When a slave lost the connection with the master, or when the replication
+# is still in progress, the slave can act in two different ways:
+#
+# 1) if slave-serve-stale-data is set to 'yes' (the default) the slave will
+#    still reply to client requests, possibly with out of data data, or the
+#    data set may just be empty if this is the first synchronization.
+#
+# 2) if slave-serve-stale data is set to 'no' the slave will reply with
+#    an error &quot;SYNC with master in progress&quot; to all the kind of commands
+#    but to INFO and SLAVEOF.
+#
+# slave-serve-stale-data yes
+
+# Slaves send PINGs to server in a predefined interval. It's possible to change
+# this interval with the repl_ping_slave_period option. The default value is 10
+# seconds.
+#
+# repl-ping-slave-period 10
+
+# The following option sets a timeout for both Bulk transfer I/O timeout and
+# master data or ping response timeout. The default value is 60 seconds.
+#
+# It is important to make sure that this value is greater than the value
+# specified for repl-ping-slave-period otherwise a timeout will be detected
+# every time there is low traffic between the master and the slave.
+#
+# repl-timeout 60
+
+################################## SECURITY ###################################
+
+# Warning: since Redis is pretty fast an outside user can try up to
+# 150k passwords per second against a good box. This means that you should
+# use a very strong password otherwise it will be very easy to break.
+# 设置Redis连接密码，如果配置了连接密码，客户端在连接Redis时需要通过auth &lt;password&gt;命令提供密码，默认关闭
+# requirepass foobared
+
+# Command renaming.
+#
+# It is possilbe to change the name of dangerous commands in a shared
+# environment. For instance the CONFIG command may be renamed into something
+# of hard to guess so that it will be still available for internal-use
+# tools but not available for general clients.
+#
+# Example:
+#
+# rename-command CONFIG b840fc02d524045429941cc15f59e41cb7be6c52
+#
+# It is also possilbe to completely kill a command renaming it into
+# an empty string:
+#
+# rename-command CONFIG &quot;&quot;
+
+################################### LIMITS ####################################
+
+# 设置同一时间最大客户端连接数，默认无限制，Redis可以同时打开的客户端连接数为Redis进程可以打开的最大文件描述符数，
+# 如果设置maxclients 0，表示不作限制。当客户端连接数到达限制时，Redis会关闭新的连接并向客户端返回max Number of clients reached错误信息
+# maxclients 128
+
+# Don't use more memory than the specified amount of bytes.
+# When the memory limit is reached Redis will try to remove keys with an
+# EXPIRE set. It will try to start freeing keys that are going to expire
+# in little time and preserve keys with a longer time to live.
+# Redis will also try to remove objects from free lists if possible.
+#
+# If all this fails, Redis will start to reply with errors to commands
+# that will use more memory, like SET, LPUSH, and so on, and will continue
+# to reply to most read-only commands like GET.
+#
+# WARNING: maxmemory can be a good idea mainly if you want to use Redis as a
+# 'state' server or cache, not as a real DB. When Redis is used as a real
+# database the memory usage will grow over the weeks, it will be obvious if
+# it is going to use too much memory in the long run, and you'll have the time
+# to upgrade. With maxmemory after the limit is reached you'll start to get
+# errors for write operations, and this may even lead to DB inconsistency.
+# 指定Redis最大内存限制，Redis在启动时会把数据加载到内存中，达到最大内存后，Redis会先尝试清除已到期或即将到期的Key，
+# 当此方法处理后，仍然到达最大内存设置，将无法再进行写入操作，但仍然可以进行读取操作。
+# Redis新的vm机制，会把Key存放内存，Value会存放在swap区
+# maxmemory &lt;bytes&gt;
+
+# MAXMEMORY POLICY: how Redis will select what to remove when maxmemory
+# is reached? You can select among five behavior:
+#
+# volatile-lru -&gt; remove the key with an expire set using an LRU algorithm
+# allkeys-lru -&gt; remove any key accordingly to the LRU algorithm
+# volatile-random -&gt; remove a random key with an expire set
+# allkeys-&gt;random -&gt; remove a random key, any key
+# volatile-ttl -&gt; remove the key with the nearest expire time (minor TTL)
+# noeviction -&gt; don't expire at all, just return an error on write operations
+#
+# Note: with all the kind of policies, Redis will return an error on write
+#       operations, when there are not suitable keys for eviction.
+#
+#       At the date of writing this commands are: set setnx setex append
+#       incr decr rpush lpush rpushx lpushx linsert lset rpoplpush sadd
+#       sinter sinterstore sunion sunionstore sdiff sdiffstore zadd zincrby
+#       zunionstore zinterstore hset hsetnx hmset hincrby incrby decrby
+#       getset mset msetnx exec sort
+#
+# The default is:
+#
+# maxmemory-policy volatile-lru
+
+# LRU and minimal TTL algorithms are not precise algorithms but approximated
+# algorithms (in order to save memory), so you can select as well the sample
+# size to check. For instance for default Redis will check three keys and
+# pick the one that was used less recently, you can change the sample size
+# using the following configuration directive.
+#
+# maxmemory-samples 3
+
+############################## APPEND ONLY MODE ###############################
+
+#
+# Note that you can have both the async dumps and the append only file if you
+# like (you have to comment the &quot;save&quot; statements above to disable the dumps).
+# Still if append only mode is enabled Redis will load the data from the
+# log file at startup ignoring the dump.rdb file.
+# 指定是否在每次更新操作后进行日志记录，Redis在默认情况下是异步的把数据写入磁盘，如果不开启，可能会在断电时导致一段时间内的数据丢失。
+# 因为redis本身同步数据文件是按上面save条件来同步的，所以有的数据会在一段时间内只存在于内存中。默认为no
+# IMPORTANT: Check the BGREWRITEAOF to check how to rewrite the append
+# log file in background when it gets too big.
+
+appendonly yes
+
+# 指定更新日志文件名，默认为appendonly.aof
+# appendfilename appendonly.aof
+
+# The fsync() call tells the Operating System to actually write data on disk
+# instead to wait for more data in the output buffer. Some OS will really flush
+# data on disk, some other OS will just try to do it ASAP.
+
+# 指定更新日志条件，共有3个可选值：
+# no:表示等操作系统进行数据缓存同步到磁盘（快）
+# always:表示每次更新操作后手动调用fsync()将数据写到磁盘（慢，安全）
+# everysec:表示每秒同步一次（折衷，默认值）
+
+appendfsync always
+# appendfsync no
+
+# When the AOF fsync policy is set to always or everysec, and a background
+# saving process (a background save or AOF log background rewriting) is
+# performing a lot of I/O against the disk, in some Linux configurations
+# Redis may block too long on the fsync() call. Note that there is no fix for
+# this currently, as even performing fsync in a different thread will block
+# our synchronous write(2) call.
+#
+# In order to mitigate this problem it's possible to use the following option
+# that will prevent fsync() from being called in the main process while a
+# BGSAVE or BGREWRITEAOF is in progress.
+#
+# This means that while another child is saving the durability of Redis is
+# the same as &quot;appendfsync none&quot;, that in pratical terms means that it is
+# possible to lost up to 30 seconds of log in the worst scenario (with the
+# default Linux settings).
+#
+# If you have latency problems turn this to &quot;yes&quot;. Otherwise leave it as
+# &quot;no&quot; that is the safest pick from the point of view of durability.
+no-appendfsync-on-rewrite no
+
+# Automatic rewrite of the append only file.
+# Redis is able to automatically rewrite the log file implicitly calling
+# BGREWRITEAOF when the AOF log size will growth by the specified percentage.
+#
+# This is how it works: Redis remembers the size of the AOF file after the
+# latest rewrite (or if no rewrite happened since the restart, the size of
+# the AOF at startup is used).
+#
+# This base size is compared to the current size. If the current size is
+# bigger than the specified percentage, the rewrite is triggered. Also
+# you need to specify a minimal size for the AOF file to be rewritten, this
+# is useful to avoid rewriting the AOF file even if the percentage increase
+# is reached but it is still pretty small.
+#
+# Specify a precentage of zero in order to disable the automatic AOF
+# rewrite feature.
+
+auto-aof-rewrite-percentage 100
+auto-aof-rewrite-min-size 64mb
+
+################################## SLOW LOG ###################################
+
+# The Redis Slow Log is a system to log queries that exceeded a specified
+# execution time. The execution time does not include the I/O operations
+# like talking with the client, sending the reply and so forth,
+# but just the time needed to actually execute the command (this is the only
+# stage of command execution where the thread is blocked and can not serve
+# other requests in the meantime).
+#
+# You can configure the slow log with two parameters: one tells Redis
+# what is the execution time, in microseconds, to exceed in order for the
+# command to get logged, and the other parameter is the length of the
+# slow log. When a new command is logged the oldest one is removed from the
+# queue of logged commands.
+
+# The following time is expressed in microseconds, so 1000000 is equivalent
+# to one second. Note that a negative number disables the slow log, while
+# a value of zero forces the logging of every command.
+# slowlog-log-slower-than 10000
+
+# There is no limit to this length. Just be aware that it will consume memory.
+# You can reclaim memory used by the slow log with SLOWLOG RESET.
+# slowlog-max-len 1024
+
+################################ VIRTUAL MEMORY ###############################
+
+### WARNING! Virtual Memory is deprecated in Redis 2.4
+### The use of Virtual Memory is strongly discouraged.
+
+### WARNING! Virtual Memory is deprecated in Redis 2.4
+### The use of Virtual Memory is strongly discouraged.
+
+# Virtual Memory allows Redis to work with datasets bigger than the actual
+# amount of RAM needed to hold the whole dataset in memory.
+# In order to do so very used keys are taken in memory while the other keys
+# are swapped into a swap file, similarly to what operating systems do
+# with memory pages.
+# 指定是否启用虚拟内存机制，默认值为no，
+# VM机制将数据分页存放，由Redis将访问量较少的页即冷数据swap到磁盘上，访问多的页面由磁盘自动换出到内存中
+# 把vm-enabled设置为yes，根据需要设置好接下来的三个VM参数，就可以启动VM了
+# vm-enabled no
+# vm-enabled yes
+
+# This is the path of the Redis swap file. As you can guess, swap files
+# can't be shared by different Redis instances, so make sure to use a swap
+# file for every redis process you are running. Redis will complain if the
+# swap file is already in use.
+#
+# Redis交换文件最好的存储是SSD（固态硬盘）
+# 虚拟内存文件路径，默认值为/tmp/redis.swap，不可多个Redis实例共享
+# *** WARNING *** if you are using a shared hosting the default of putting
+# the swap file under /tmp is not secure. Create a dir with access granted
+# only to Redis user and configure Redis to create the swap file there.
+# vm-swap-file /tmp/redis.swap
+
+# With vm-max-memory 0 the system will swap everything it can. Not a good
+# default, just specify the max amount of RAM you can in bytes, but it's
+# better to leave some margin. For instance specify an amount of RAM
+# that's more or less between 60 and 80% of your free RAM.
+# 将所有大于vm-max-memory的数据存入虚拟内存，无论vm-max-memory设置多少，所有索引数据都是内存存储的（Redis的索引数据就是keys）
+# 也就是说当vm-max-memory设置为0的时候，其实是所有value都存在于磁盘。默认值为0
+# vm-max-memory 0
+
+# Redis swap文件分成了很多的page，一个对象可以保存在多个page上面，但一个page上不能被多个对象共享，vm-page-size是要根据存储的数据大小来设定的。
+# 建议如果存储很多小对象，page大小最后设置为32或64bytes；如果存储很大的对象，则可以使用更大的page，如果不确定，就使用默认值
+# vm-page-size 32
+
+# 设置swap文件中的page数量由于页表（一种表示页面空闲或使用的bitmap）是存放在内存中的，在磁盘上每8个pages将消耗1byte的内存
+# swap空间总容量为 vm-page-size * vm-pages
+#
+# With the default of 32-bytes memory pages and 134217728 pages Redis will
+# use a 4 GB swap file, that will use 16 MB of RAM for the page table.
+#
+# It's better to use the smallest acceptable value for your application,
+# but the default is large in order to work in most conditions.
+# vm-pages 134217728
+
+# Max number of VM I/O threads running at the same time.
+# This threads are used to read/write data from/to swap file, since they
+# also encode and decode objects from disk to memory or the reverse, a bigger
+# number of threads can help with big objects even if they can't help with
+# I/O itself as the physical device may not be able to couple with many
+# reads/writes operations at the same time.
+# 设置访问swap文件的I/O线程数，最后不要超过机器的核数，如果设置为0，那么所有对swap文件的操作都是串行的，可能会造成比较长时间的延迟，默认值为4
+# vm-max-threads 4
+
+############################### ADVANCED CONFIG ###############################
+
+# Hashes are encoded in a special way (much more memory efficient) when they
+# have at max a given numer of elements, and the biggest element does not
+# exceed a given threshold. You can configure this limits with the following
+# configuration directives.
+# 指定在超过一定的数量或者最大的元素超过某一临界值时，采用一种特殊的哈希算法
+# hash-max-zipmap-entries 512
+# hash-max-zipmap-value 64
+
+# Similarly to hashes, small lists are also encoded in a special way in order
+# to save a lot of space. The special representation is only used when
+# you are under the following limits:
+# list-max-ziplist-entries 512
+# list-max-ziplist-value 64
+
+# Sets have a special encoding in just one case: when a set is composed
+# of just strings that happens to be integers in radix 10 in the range
+# of 64 bit signed integers.
+# The following configuration setting sets the limit in the size of the
+# set in order to use this special memory saving encoding.
+# set-max-intset-entries 512
+
+# Similarly to hashes and lists, sorted sets are also specially encoded in
+# order to save a lot of space. This encoding is only used when the length and
+# elements of a sorted set are below the following limits:
+# zset-max-ziplist-entries 128
+# zset-max-ziplist-value 64
+
+# Active rehashing uses 1 millisecond every 100 milliseconds of CPU time in
+# order to help rehashing the main Redis hash table (the one mapping top-level
+# keys to values). The hash table implementation redis uses (see dict.c)
+# performs a lazy rehashing: the more operation you run into an hash table
+# that is rhashing, the more rehashing &quot;steps&quot; are performed, so if the
+# server is idle the rehashing is never complete and some more memory is used
+# by the hash table.
+#
+# The default is to use this millisecond 10 times every second in order to
+# active rehashing the main dictionaries, freeing memory when possible.
+#
+# If unsure:
+# use &quot;activerehashing no&quot; if you have hard latency requirements and it is
+# not a good thing in your environment that Redis can reply form time to time
+# to queries with 2 milliseconds delay.
+# 指定是否激活重置哈希，默认为开启
+# activerehashing yes
+
+################################## INCLUDES ###################################
+
+# 指定包含其他的配置文件，可以在同一主机上多个Redis实例之间使用同一份配置文件，而同时各实例又拥有自己的特定配置文件
+# include /path/to/local.conf
+# include /path/to/other.conf
+
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br><span class="line-number">69</span><br><span class="line-number">70</span><br><span class="line-number">71</span><br><span class="line-number">72</span><br><span class="line-number">73</span><br><span class="line-number">74</span><br><span class="line-number">75</span><br><span class="line-number">76</span><br><span class="line-number">77</span><br><span class="line-number">78</span><br><span class="line-number">79</span><br><span class="line-number">80</span><br><span class="line-number">81</span><br><span class="line-number">82</span><br><span class="line-number">83</span><br><span class="line-number">84</span><br><span class="line-number">85</span><br><span class="line-number">86</span><br><span class="line-number">87</span><br><span class="line-number">88</span><br><span class="line-number">89</span><br><span class="line-number">90</span><br><span class="line-number">91</span><br><span class="line-number">92</span><br><span class="line-number">93</span><br><span class="line-number">94</span><br><span class="line-number">95</span><br><span class="line-number">96</span><br><span class="line-number">97</span><br><span class="line-number">98</span><br><span class="line-number">99</span><br><span class="line-number">100</span><br><span class="line-number">101</span><br><span class="line-number">102</span><br><span class="line-number">103</span><br><span class="line-number">104</span><br><span class="line-number">105</span><br><span class="line-number">106</span><br><span class="line-number">107</span><br><span class="line-number">108</span><br><span class="line-number">109</span><br><span class="line-number">110</span><br><span class="line-number">111</span><br><span class="line-number">112</span><br><span class="line-number">113</span><br><span class="line-number">114</span><br><span class="line-number">115</span><br><span class="line-number">116</span><br><span class="line-number">117</span><br><span class="line-number">118</span><br><span class="line-number">119</span><br><span class="line-number">120</span><br><span class="line-number">121</span><br><span class="line-number">122</span><br><span class="line-number">123</span><br><span class="line-number">124</span><br><span class="line-number">125</span><br><span class="line-number">126</span><br><span class="line-number">127</span><br><span class="line-number">128</span><br><span class="line-number">129</span><br><span class="line-number">130</span><br><span class="line-number">131</span><br><span class="line-number">132</span><br><span class="line-number">133</span><br><span class="line-number">134</span><br><span class="line-number">135</span><br><span class="line-number">136</span><br><span class="line-number">137</span><br><span class="line-number">138</span><br><span class="line-number">139</span><br><span class="line-number">140</span><br><span class="line-number">141</span><br><span class="line-number">142</span><br><span class="line-number">143</span><br><span class="line-number">144</span><br><span class="line-number">145</span><br><span class="line-number">146</span><br><span class="line-number">147</span><br><span class="line-number">148</span><br><span class="line-number">149</span><br><span class="line-number">150</span><br><span class="line-number">151</span><br><span class="line-number">152</span><br><span class="line-number">153</span><br><span class="line-number">154</span><br><span class="line-number">155</span><br><span class="line-number">156</span><br><span class="line-number">157</span><br><span class="line-number">158</span><br><span class="line-number">159</span><br><span class="line-number">160</span><br><span class="line-number">161</span><br><span class="line-number">162</span><br><span class="line-number">163</span><br><span class="line-number">164</span><br><span class="line-number">165</span><br><span class="line-number">166</span><br><span class="line-number">167</span><br><span class="line-number">168</span><br><span class="line-number">169</span><br><span class="line-number">170</span><br><span class="line-number">171</span><br><span class="line-number">172</span><br><span class="line-number">173</span><br><span class="line-number">174</span><br><span class="line-number">175</span><br><span class="line-number">176</span><br><span class="line-number">177</span><br><span class="line-number">178</span><br><span class="line-number">179</span><br><span class="line-number">180</span><br><span class="line-number">181</span><br><span class="line-number">182</span><br><span class="line-number">183</span><br><span class="line-number">184</span><br><span class="line-number">185</span><br><span class="line-number">186</span><br><span class="line-number">187</span><br><span class="line-number">188</span><br><span class="line-number">189</span><br><span class="line-number">190</span><br><span class="line-number">191</span><br><span class="line-number">192</span><br><span class="line-number">193</span><br><span class="line-number">194</span><br><span class="line-number">195</span><br><span class="line-number">196</span><br><span class="line-number">197</span><br><span class="line-number">198</span><br><span class="line-number">199</span><br><span class="line-number">200</span><br><span class="line-number">201</span><br><span class="line-number">202</span><br><span class="line-number">203</span><br><span class="line-number">204</span><br><span class="line-number">205</span><br><span class="line-number">206</span><br><span class="line-number">207</span><br><span class="line-number">208</span><br><span class="line-number">209</span><br><span class="line-number">210</span><br><span class="line-number">211</span><br><span class="line-number">212</span><br><span class="line-number">213</span><br><span class="line-number">214</span><br><span class="line-number">215</span><br><span class="line-number">216</span><br><span class="line-number">217</span><br><span class="line-number">218</span><br><span class="line-number">219</span><br><span class="line-number">220</span><br><span class="line-number">221</span><br><span class="line-number">222</span><br><span class="line-number">223</span><br><span class="line-number">224</span><br><span class="line-number">225</span><br><span class="line-number">226</span><br><span class="line-number">227</span><br><span class="line-number">228</span><br><span class="line-number">229</span><br><span class="line-number">230</span><br><span class="line-number">231</span><br><span class="line-number">232</span><br><span class="line-number">233</span><br><span class="line-number">234</span><br><span class="line-number">235</span><br><span class="line-number">236</span><br><span class="line-number">237</span><br><span class="line-number">238</span><br><span class="line-number">239</span><br><span class="line-number">240</span><br><span class="line-number">241</span><br><span class="line-number">242</span><br><span class="line-number">243</span><br><span class="line-number">244</span><br><span class="line-number">245</span><br><span class="line-number">246</span><br><span class="line-number">247</span><br><span class="line-number">248</span><br><span class="line-number">249</span><br><span class="line-number">250</span><br><span class="line-number">251</span><br><span class="line-number">252</span><br><span class="line-number">253</span><br><span class="line-number">254</span><br><span class="line-number">255</span><br><span class="line-number">256</span><br><span class="line-number">257</span><br><span class="line-number">258</span><br><span class="line-number">259</span><br><span class="line-number">260</span><br><span class="line-number">261</span><br><span class="line-number">262</span><br><span class="line-number">263</span><br><span class="line-number">264</span><br><span class="line-number">265</span><br><span class="line-number">266</span><br><span class="line-number">267</span><br><span class="line-number">268</span><br><span class="line-number">269</span><br><span class="line-number">270</span><br><span class="line-number">271</span><br><span class="line-number">272</span><br><span class="line-number">273</span><br><span class="line-number">274</span><br><span class="line-number">275</span><br><span class="line-number">276</span><br><span class="line-number">277</span><br><span class="line-number">278</span><br><span class="line-number">279</span><br><span class="line-number">280</span><br><span class="line-number">281</span><br><span class="line-number">282</span><br><span class="line-number">283</span><br><span class="line-number">284</span><br><span class="line-number">285</span><br><span class="line-number">286</span><br><span class="line-number">287</span><br><span class="line-number">288</span><br><span class="line-number">289</span><br><span class="line-number">290</span><br><span class="line-number">291</span><br><span class="line-number">292</span><br><span class="line-number">293</span><br><span class="line-number">294</span><br><span class="line-number">295</span><br><span class="line-number">296</span><br><span class="line-number">297</span><br><span class="line-number">298</span><br><span class="line-number">299</span><br><span class="line-number">300</span><br><span class="line-number">301</span><br><span class="line-number">302</span><br><span class="line-number">303</span><br><span class="line-number">304</span><br><span class="line-number">305</span><br><span class="line-number">306</span><br><span class="line-number">307</span><br><span class="line-number">308</span><br><span class="line-number">309</span><br><span class="line-number">310</span><br><span class="line-number">311</span><br><span class="line-number">312</span><br><span class="line-number">313</span><br><span class="line-number">314</span><br><span class="line-number">315</span><br><span class="line-number">316</span><br><span class="line-number">317</span><br><span class="line-number">318</span><br><span class="line-number">319</span><br><span class="line-number">320</span><br><span class="line-number">321</span><br><span class="line-number">322</span><br><span class="line-number">323</span><br><span class="line-number">324</span><br><span class="line-number">325</span><br><span class="line-number">326</span><br><span class="line-number">327</span><br><span class="line-number">328</span><br><span class="line-number">329</span><br><span class="line-number">330</span><br><span class="line-number">331</span><br><span class="line-number">332</span><br><span class="line-number">333</span><br><span class="line-number">334</span><br><span class="line-number">335</span><br><span class="line-number">336</span><br><span class="line-number">337</span><br><span class="line-number">338</span><br><span class="line-number">339</span><br><span class="line-number">340</span><br><span class="line-number">341</span><br><span class="line-number">342</span><br><span class="line-number">343</span><br><span class="line-number">344</span><br><span class="line-number">345</span><br><span class="line-number">346</span><br><span class="line-number">347</span><br><span class="line-number">348</span><br><span class="line-number">349</span><br><span class="line-number">350</span><br><span class="line-number">351</span><br><span class="line-number">352</span><br><span class="line-number">353</span><br><span class="line-number">354</span><br><span class="line-number">355</span><br><span class="line-number">356</span><br><span class="line-number">357</span><br><span class="line-number">358</span><br><span class="line-number">359</span><br><span class="line-number">360</span><br><span class="line-number">361</span><br><span class="line-number">362</span><br><span class="line-number">363</span><br><span class="line-number">364</span><br><span class="line-number">365</span><br><span class="line-number">366</span><br><span class="line-number">367</span><br><span class="line-number">368</span><br><span class="line-number">369</span><br><span class="line-number">370</span><br><span class="line-number">371</span><br><span class="line-number">372</span><br><span class="line-number">373</span><br><span class="line-number">374</span><br><span class="line-number">375</span><br><span class="line-number">376</span><br><span class="line-number">377</span><br><span class="line-number">378</span><br><span class="line-number">379</span><br><span class="line-number">380</span><br><span class="line-number">381</span><br><span class="line-number">382</span><br><span class="line-number">383</span><br><span class="line-number">384</span><br><span class="line-number">385</span><br><span class="line-number">386</span><br><span class="line-number">387</span><br><span class="line-number">388</span><br><span class="line-number">389</span><br><span class="line-number">390</span><br><span class="line-number">391</span><br><span class="line-number">392</span><br><span class="line-number">393</span><br><span class="line-number">394</span><br><span class="line-number">395</span><br><span class="line-number">396</span><br><span class="line-number">397</span><br><span class="line-number">398</span><br><span class="line-number">399</span><br><span class="line-number">400</span><br><span class="line-number">401</span><br><span class="line-number">402</span><br><span class="line-number">403</span><br><span class="line-number">404</span><br><span class="line-number">405</span><br><span class="line-number">406</span><br><span class="line-number">407</span><br><span class="line-number">408</span><br><span class="line-number">409</span><br><span class="line-number">410</span><br><span class="line-number">411</span><br><span class="line-number">412</span><br><span class="line-number">413</span><br><span class="line-number">414</span><br><span class="line-number">415</span><br><span class="line-number">416</span><br><span class="line-number">417</span><br><span class="line-number">418</span><br><span class="line-number">419</span><br><span class="line-number">420</span><br><span class="line-number">421</span><br><span class="line-number">422</span><br><span class="line-number">423</span><br><span class="line-number">424</span><br><span class="line-number">425</span><br><span class="line-number">426</span><br><span class="line-number">427</span><br></div></div><h2 id="哨兵配置文件sentinel-conf"><a href="#哨兵配置文件sentinel-conf" class="header-anchor">#</a> 哨兵配置文件sentinel.conf</h2> <p>修改配置</p> <div class="language-conf line-numbers-mode"><pre class="language-text"><code># 禁止保护模式
+protected-mode no
+# 配置监听的主服务器，这里sentinel monitor代表监控，mymaster代表服务器的名称，可以自定义，192.168.11.128代表监控的主服务器，6379代表端口，2代表只有两个或两个以上的哨兵认为主服务器不可用的时候，才会进行failover操作。
+sentinel monitor mymaster 192.168.245.130 6379 2
+# sentinel author-pass定义服务的密码，mymaster是服务名称，123456是Redis服务器密码
+# sentinel auth-pass &lt;master-name&gt; &lt;password&gt;
+sentinel auth-pass mymaster FFRXV2cyadtv
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br></div></div><p>完整配置文件：</p> <div class="language-config line-numbers-mode"><pre class="language-text"><code># Example sentinel.conf
+
+# *** IMPORTANT ***
+#
+# By default Sentinel will not be reachable from interfaces different than
+# localhost, either use the 'bind' directive to bind to a list of network
+# interfaces, or disable protected mode with &quot;protected-mode no&quot; by
+# adding it to this configuration file.
+#
+# Before doing that MAKE SURE the instance is protected from the outside
+# world via firewalling or other means.
+#
+# For example you may use one of the following:
+#
+# bind 127.0.0.1 192.168.1.1
+#
+protected-mode no
+
+# port &lt;sentinel-port&gt;
+# The port that this sentinel instance will run on
+port 26379
+
+# By default Redis Sentinel does not run as a daemon. Use 'yes' if you need it.
+# Note that Redis will write a pid file in /var/run/redis-sentinel.pid when
+# daemonized.
+daemonize yes
+
+# When running daemonized, Redis Sentinel writes a pid file in
+# /var/run/redis-sentinel.pid by default. You can specify a custom pid file
+# location here.
+pidfile /var/run/redis-sentinel.pid
+
+# Specify the log file name. Also the empty string can be used to force
+# Sentinel to log on the standard output. Note that if you use standard
+# output for logging but daemonize, logs will be sent to /dev/null
+logfile &quot;&quot;
+
+# sentinel announce-ip &lt;ip&gt;
+# sentinel announce-port &lt;port&gt;
+#
+# The above two configuration directives are useful in environments where,
+# because of NAT, Sentinel is reachable from outside via a non-local address.
+#
+# When announce-ip is provided, the Sentinel will claim the specified IP address
+# in HELLO messages used to gossip its presence, instead of auto-detecting the
+# local address as it usually does.
+#
+# Similarly when announce-port is provided and is valid and non-zero, Sentinel
+# will announce the specified TCP port.
+#
+# The two options don't need to be used together, if only announce-ip is
+# provided, the Sentinel will announce the specified IP and the server port
+# as specified by the &quot;port&quot; option. If only announce-port is provided, the
+# Sentinel will announce the auto-detected local IP and the specified port.
+#
+# Example:
+#
+# sentinel announce-ip 1.2.3.4
+
+# dir &lt;working-directory&gt;
+# Every long running process should have a well-defined working directory.
+# For Redis Sentinel to chdir to /tmp at startup is the simplest thing
+# for the process to don't interfere with administrative tasks such as
+# unmounting filesystems.
+dir /tmp
+
+# sentinel monitor &lt;master-name&gt; &lt;ip&gt; &lt;redis-port&gt; &lt;quorum&gt;
+#
+# Tells Sentinel to monitor this master, and to consider it in O_DOWN
+# (Objectively Down) state only if at least &lt;quorum&gt; sentinels agree.
+#
+# Note that whatever is the ODOWN quorum, a Sentinel will require to
+# be elected by the majority of the known Sentinels in order to
+# start a failover, so no failover can be performed in minority.
+#
+# Replicas are auto-discovered, so you don't need to specify replicas in
+# any way. Sentinel itself will rewrite this configuration file adding
+# the replicas using additional configuration options.
+# Also note that the configuration file is rewritten when a
+# replica is promoted to master.
+#
+# Note: master name should not include special characters or spaces.
+# The valid charset is A-z 0-9 and the three characters &quot;.-_&quot;.
+# 配置监听的主服务器，这里sentinel monitor代表监控，mymaster代表服务器的名称，可以自定义，192.168.11.128代表监控的主服务器，6379代表端口，2代表只有两个或两个以上的哨兵认为主服务器不可用的时候，才会进行failover操作。
+sentinel monitor mymaster 192.168.245.130 6379 2
+# sentinel author-pass定义服务的密码，mymaster是服务名称，123456是Redis服务器密码
+# sentinel auth-pass &lt;master-name&gt; &lt;password&gt;
+sentinel auth-pass mymaster FFRXV2cyadtv
+# sentinel auth-pass &lt;master-name&gt; &lt;password&gt;
+#
+# Set the password to use to authenticate with the master and replicas.
+# Useful if there is a password set in the Redis instances to monitor.
+#
+# Note that the master password is also used for replicas, so it is not
+# possible to set a different password in masters and replicas instances
+# if you want to be able to monitor these instances with Sentinel.
+#
+# However you can have Redis instances without the authentication enabled
+# mixed with Redis instances requiring the authentication (as long as the
+# password set is the same for all the instances requiring the password) as
+# the AUTH command will have no effect in Redis instances with authentication
+# switched off.
+#
+# Example:
+#
+# sentinel auth-pass mymaster MySUPER--secret-0123passw0rd
+
+# sentinel down-after-milliseconds &lt;master-name&gt; &lt;milliseconds&gt;
+#
+# Number of milliseconds the master (or any attached replica or sentinel) should
+# be unreachable (as in, not acceptable reply to PING, continuously, for the
+# specified period) in order to consider it in S_DOWN state (Subjectively
+# Down).
+#
+# Default is 30 seconds.
+sentinel down-after-milliseconds mymaster 30000
+
+# sentinel parallel-syncs &lt;master-name&gt; &lt;numreplicas&gt;
+#
+# How many replicas we can reconfigure to point to the new replica simultaneously
+# during the failover. Use a low number if you use the replicas to serve query
+# to avoid that all the replicas will be unreachable at about the same
+# time while performing the synchronization with the master.
+sentinel parallel-syncs mymaster 1
+
+# sentinel failover-timeout &lt;master-name&gt; &lt;milliseconds&gt;
+#
+# Specifies the failover timeout in milliseconds. It is used in many ways:
+#
+# - The time needed to re-start a failover after a previous failover was
+#   already tried against the same master by a given Sentinel, is two
+#   times the failover timeout.
+#
+# - The time needed for a replica replicating to a wrong master according
+#   to a Sentinel current configuration, to be forced to replicate
+#   with the right master, is exactly the failover timeout (counting since
+#   the moment a Sentinel detected the misconfiguration).
+#
+# - The time needed to cancel a failover that is already in progress but
+#   did not produced any configuration change (SLAVEOF NO ONE yet not
+#   acknowledged by the promoted replica).
+#
+# - The maximum time a failover in progress waits for all the replicas to be
+#   reconfigured as replicas of the new master. However even after this time
+#   the replicas will be reconfigured by the Sentinels anyway, but not with
+#   the exact parallel-syncs progression as specified.
+#
+# Default is 3 minutes.
+sentinel failover-timeout mymaster 180000
+
+# SCRIPTS EXECUTION
+#
+# sentinel notification-script and sentinel reconfig-script are used in order
+# to configure scripts that are called to notify the system administrator
+# or to reconfigure clients after a failover. The scripts are executed
+# with the following rules for error handling:
+#
+# If script exits with &quot;1&quot; the execution is retried later (up to a maximum
+# number of times currently set to 10).
+#
+# If script exits with &quot;2&quot; (or an higher value) the script execution is
+# not retried.
+#
+# If script terminates because it receives a signal the behavior is the same
+# as exit code 1.
+#
+# A script has a maximum running time of 60 seconds. After this limit is
+# reached the script is terminated with a SIGKILL and the execution retried.
+
+# NOTIFICATION SCRIPT
+#
+# sentinel notification-script &lt;master-name&gt; &lt;script-path&gt;
+# 
+# Call the specified notification script for any sentinel event that is
+# generated in the WARNING level (for instance -sdown, -odown, and so forth).
+# This script should notify the system administrator via email, SMS, or any
+# other messaging system, that there is something wrong with the monitored
+# Redis systems.
+#
+# The script is called with just two arguments: the first is the event type
+# and the second the event description.
+#
+# The script must exist and be executable in order for sentinel to start if
+# this option is provided.
+#
+# Example:
+#
+# sentinel notification-script mymaster /var/redis/notify.sh
+
+# CLIENTS RECONFIGURATION SCRIPT
+#
+# sentinel client-reconfig-script &lt;master-name&gt; &lt;script-path&gt;
+#
+# When the master changed because of a failover a script can be called in
+# order to perform application-specific tasks to notify the clients that the
+# configuration has changed and the master is at a different address.
+# 
+# The following arguments are passed to the script:
+#
+# &lt;master-name&gt; &lt;role&gt; &lt;state&gt; &lt;from-ip&gt; &lt;from-port&gt; &lt;to-ip&gt; &lt;to-port&gt;
+#
+# &lt;state&gt; is currently always &quot;failover&quot;
+# &lt;role&gt; is either &quot;leader&quot; or &quot;observer&quot;
+# 
+# The arguments from-ip, from-port, to-ip, to-port are used to communicate
+# the old address of the master and the new address of the elected replica
+# (now a master).
+#
+# This script should be resistant to multiple invocations.
+#
+# Example:
+#
+# sentinel client-reconfig-script mymaster /var/redis/reconfig.sh
+
+# SECURITY
+#
+# By default SENTINEL SET will not be able to change the notification-script
+# and client-reconfig-script at runtime. This avoids a trivial security issue
+# where clients can set the script to anything and trigger a failover in order
+# to get the program executed.
+
+sentinel deny-scripts-reconfig yes
+
+# REDIS COMMANDS RENAMING
+#
+# Sometimes the Redis server has certain commands, that are needed for Sentinel
+# to work correctly, renamed to unguessable strings. This is often the case
+# of CONFIG and SLAVEOF in the context of providers that provide Redis as
+# a service, and don't want the customers to reconfigure the instances outside
+# of the administration console.
+#
+# In such case it is possible to tell Sentinel to use different command names
+# instead of the normal ones. For example if the master &quot;mymaster&quot;, and the
+# associated replicas, have &quot;CONFIG&quot; all renamed to &quot;GUESSME&quot;, I could use:
+#
+# SENTINEL rename-command mymaster CONFIG GUESSME
+#
+# After such configuration is set, every time Sentinel would use CONFIG it will
+# use GUESSME instead. Note that there is no actual need to respect the command
+# case, so writing &quot;config guessme&quot; is the same in the example above.
+#
+# SENTINEL SET can also be used in order to perform this configuration at runtime.
+#
+# In order to set a command back to its original name (undo the renaming), it
+# is possible to just rename a command to itsef:
+#
+# SENTINEL rename-command mymaster CONFIG CONFIG
+
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br><span class="line-number">69</span><br><span class="line-number">70</span><br><span class="line-number">71</span><br><span class="line-number">72</span><br><span class="line-number">73</span><br><span class="line-number">74</span><br><span class="line-number">75</span><br><span class="line-number">76</span><br><span class="line-number">77</span><br><span class="line-number">78</span><br><span class="line-number">79</span><br><span class="line-number">80</span><br><span class="line-number">81</span><br><span class="line-number">82</span><br><span class="line-number">83</span><br><span class="line-number">84</span><br><span class="line-number">85</span><br><span class="line-number">86</span><br><span class="line-number">87</span><br><span class="line-number">88</span><br><span class="line-number">89</span><br><span class="line-number">90</span><br><span class="line-number">91</span><br><span class="line-number">92</span><br><span class="line-number">93</span><br><span class="line-number">94</span><br><span class="line-number">95</span><br><span class="line-number">96</span><br><span class="line-number">97</span><br><span class="line-number">98</span><br><span class="line-number">99</span><br><span class="line-number">100</span><br><span class="line-number">101</span><br><span class="line-number">102</span><br><span class="line-number">103</span><br><span class="line-number">104</span><br><span class="line-number">105</span><br><span class="line-number">106</span><br><span class="line-number">107</span><br><span class="line-number">108</span><br><span class="line-number">109</span><br><span class="line-number">110</span><br><span class="line-number">111</span><br><span class="line-number">112</span><br><span class="line-number">113</span><br><span class="line-number">114</span><br><span class="line-number">115</span><br><span class="line-number">116</span><br><span class="line-number">117</span><br><span class="line-number">118</span><br><span class="line-number">119</span><br><span class="line-number">120</span><br><span class="line-number">121</span><br><span class="line-number">122</span><br><span class="line-number">123</span><br><span class="line-number">124</span><br><span class="line-number">125</span><br><span class="line-number">126</span><br><span class="line-number">127</span><br><span class="line-number">128</span><br><span class="line-number">129</span><br><span class="line-number">130</span><br><span class="line-number">131</span><br><span class="line-number">132</span><br><span class="line-number">133</span><br><span class="line-number">134</span><br><span class="line-number">135</span><br><span class="line-number">136</span><br><span class="line-number">137</span><br><span class="line-number">138</span><br><span class="line-number">139</span><br><span class="line-number">140</span><br><span class="line-number">141</span><br><span class="line-number">142</span><br><span class="line-number">143</span><br><span class="line-number">144</span><br><span class="line-number">145</span><br><span class="line-number">146</span><br><span class="line-number">147</span><br><span class="line-number">148</span><br><span class="line-number">149</span><br><span class="line-number">150</span><br><span class="line-number">151</span><br><span class="line-number">152</span><br><span class="line-number">153</span><br><span class="line-number">154</span><br><span class="line-number">155</span><br><span class="line-number">156</span><br><span class="line-number">157</span><br><span class="line-number">158</span><br><span class="line-number">159</span><br><span class="line-number">160</span><br><span class="line-number">161</span><br><span class="line-number">162</span><br><span class="line-number">163</span><br><span class="line-number">164</span><br><span class="line-number">165</span><br><span class="line-number">166</span><br><span class="line-number">167</span><br><span class="line-number">168</span><br><span class="line-number">169</span><br><span class="line-number">170</span><br><span class="line-number">171</span><br><span class="line-number">172</span><br><span class="line-number">173</span><br><span class="line-number">174</span><br><span class="line-number">175</span><br><span class="line-number">176</span><br><span class="line-number">177</span><br><span class="line-number">178</span><br><span class="line-number">179</span><br><span class="line-number">180</span><br><span class="line-number">181</span><br><span class="line-number">182</span><br><span class="line-number">183</span><br><span class="line-number">184</span><br><span class="line-number">185</span><br><span class="line-number">186</span><br><span class="line-number">187</span><br><span class="line-number">188</span><br><span class="line-number">189</span><br><span class="line-number">190</span><br><span class="line-number">191</span><br><span class="line-number">192</span><br><span class="line-number">193</span><br><span class="line-number">194</span><br><span class="line-number">195</span><br><span class="line-number">196</span><br><span class="line-number">197</span><br><span class="line-number">198</span><br><span class="line-number">199</span><br><span class="line-number">200</span><br><span class="line-number">201</span><br><span class="line-number">202</span><br><span class="line-number">203</span><br><span class="line-number">204</span><br><span class="line-number">205</span><br><span class="line-number">206</span><br><span class="line-number">207</span><br><span class="line-number">208</span><br><span class="line-number">209</span><br><span class="line-number">210</span><br><span class="line-number">211</span><br><span class="line-number">212</span><br><span class="line-number">213</span><br><span class="line-number">214</span><br><span class="line-number">215</span><br><span class="line-number">216</span><br><span class="line-number">217</span><br><span class="line-number">218</span><br><span class="line-number">219</span><br><span class="line-number">220</span><br><span class="line-number">221</span><br><span class="line-number">222</span><br><span class="line-number">223</span><br><span class="line-number">224</span><br><span class="line-number">225</span><br><span class="line-number">226</span><br><span class="line-number">227</span><br><span class="line-number">228</span><br><span class="line-number">229</span><br><span class="line-number">230</span><br><span class="line-number">231</span><br><span class="line-number">232</span><br><span class="line-number">233</span><br><span class="line-number">234</span><br><span class="line-number">235</span><br><span class="line-number">236</span><br><span class="line-number">237</span><br><span class="line-number">238</span><br><span class="line-number">239</span><br><span class="line-number">240</span><br><span class="line-number">241</span><br><span class="line-number">242</span><br><span class="line-number">243</span><br><span class="line-number">244</span><br><span class="line-number">245</span><br><span class="line-number">246</span><br><span class="line-number">247</span><br><span class="line-number">248</span><br></div></div><h2 id="启动"><a href="#启动" class="header-anchor">#</a> 启动</h2> <p>有了上述的修改，我们可以进入Redis的安装目录的src目录，通过下面的命令启动服务器和哨兵</p> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code><span class="token comment"># 启动Redis服务器进程</span>
+/usr/local/redis/bin/redis-server /usr/local/redis/redis.conf
+<span class="token comment"># 启动哨兵进程</span>
+<span class="token function">sudo</span> /usr/local/redis/bin/redis-server /usr/local/redis/sentinel.conf <span class="token parameter variable">--sentinel</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br></div></div><p>注意启动的顺序。<strong>首先是主机（192.168.11.128）的Redis服务进程，然后启动从机的服务进程，最后启动3个哨兵的服务进程。</strong></p> <h2 id="测试"><a href="#测试" class="header-anchor">#</a> 测试</h2> <p>主从测试</p> <div class="language-conf line-numbers-mode"><pre class="language-text"><code>info replication
+
+&quot;# Replication
+role:master
+connected_slaves:2
+slave0:ip=192.168.245.133,port=6379,state=online,offset=158512,lag=1
+slave1:ip=192.168.245.131,port=6379,state=online,offset=158367,lag=1
+master_replid:5e937e9ffb8ede1c2d4d0806f35637a9fe94fb28
+master_replid2:0000000000000000000000000000000000000000
+master_repl_offset:158512
+second_repl_offset:-1
+repl_backlog_active:1
+repl_backlog_size:1048576
+repl_backlog_first_byte_offset:1
+repl_backlog_histlen:158512
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br></div></div><p>哨兵启动：</p> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code>/usr/local/redis/bin/redis-cli <span class="token parameter variable">-h</span> <span class="token number">192.168</span>.245.130 <span class="token parameter variable">-p</span> <span class="token number">26379</span> info sentinel
+
+<span class="token comment"># Sentinel</span>
+sentinel_masters:1
+sentinel_tilt:0
+sentinel_running_scripts:0
+sentinel_scripts_queue_length:0
+sentinel_simulate_failure_flags:0
+master0:name<span class="token operator">=</span>mymaster,status<span class="token operator">=</span>ok,address<span class="token operator">=</span><span class="token number">192.168</span>.245.130:6379,slaves<span class="token operator">=</span><span class="token number">2</span>,sentinels<span class="token operator">=</span><span class="token number">3</span>
+
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br></div></div><p>断开主服务器：</p> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code>/usr/local/redis/bin/redis-cli <span class="token parameter variable">-h</span> <span class="token number">192.168</span>.245.130 <span class="token parameter variable">-p</span> <span class="token number">6379</span> <span class="token function">shutdown</span>
+
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br></div></div><p>断开主redis时，原来的从服务器：</p> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code>虚拟机2:<span class="token operator"><span class="token file-descriptor important">0</span>&gt;</span>info replication
+<span class="token string">&quot;# Replication
+role:slave
+master_host:192.168.245.130
+master_port:6379
+master_link_status:down
+master_last_io_seconds_ago:-1
+master_sync_in_progress:0
+slave_repl_offset:444992
+master_link_down_since_seconds:21
+slave_priority:100
+slave_read_only:1
+connected_slaves:0
+master_replid:5e937e9ffb8ede1c2d4d0806f35637a9fe94fb28
+master_replid2:0000000000000000000000000000000000000000
+master_repl_offset:444992
+second_repl_offset:-1
+repl_backlog_active:1
+repl_backlog_size:1048576
+repl_backlog_first_byte_offset:155651
+repl_backlog_histlen:289342
+&quot;</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br></div></div><p>断开主redis后,原来的从服务器：</p> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code>虚拟机2:<span class="token operator"><span class="token file-descriptor important">0</span>&gt;</span>info replication
+&quot;# Replication
+role:master
+connected_slaves:1
+slave0:ip<span class="token operator">=</span><span class="token number">192.168</span>.245.133,port<span class="token operator">=</span><span class="token number">6379</span>,state<span class="token operator">=</span>online,offset<span class="token operator">=</span><span class="token number">450843</span>,lag<span class="token operator">=</span><span class="token number">0</span>
+master_replid:a61addb17962257e80cd5f4709df311454a5b4df
+master_replid2:5e937e9ffb8ede1c2d4d0806f35637a9fe94fb28
+master_repl_offset:450843
+second_repl_offset:444993
+repl_backlog_active:1
+repl_backlog_size:1048576
+repl_backlog_first_byte_offset:155651
+repl_backlog_histlen:295193
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br></div></div><p>原来的主服务器启动后：</p> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code>虚拟机1:<span class="token operator"><span class="token file-descriptor important">0</span>&gt;</span>info replication
+<span class="token string">&quot;# Replication
+role:slave
+master_host:192.168.245.131
+master_port:6379
+master_link_status:down
+master_last_io_seconds_ago:-1
+master_sync_in_progress:0
+slave_repl_offset:1
+master_link_down_since_seconds:1618215689
+slave_priority:100
+slave_read_only:1
+connected_slaves:0
+master_replid:8e072a60deda8a0897c101b0ecffda25e042be47
+master_replid2:0000000000000000000000000000000000000000
+master_repl_offset:0
+second_repl_offset:-1
+repl_backlog_active:0
+repl_backlog_size:1048576
+repl_backlog_first_byte_offset:0
+repl_backlog_histlen:0
+&quot;</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br></div></div></div> <div class="page-edit"><div class="edit-link"><a href="https://github.com/caizongkai/vuepressDemo/edit/main/docs/md/database/Redis/redis-sentinel.md" target="_blank" rel="noopener noreferrer">帮助我们改善此页面！</a> <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></div> <!----></div> <div class="page-nav"><p class="inner"><span class="prev">
+        ←
+        <a href="/person-log.io/md/database/Redis/redis-install.html" class="prev">
+          redis实战-redis安装
+        </a></span> <!----></p></div> </div> <!----></div></div>
+    <script src="/person-log.io/assets/js/app.900e0138.js" defer></script><script src="/person-log.io/assets/js/101.e70ee001.js" defer></script>
+  </body>
+</html>
